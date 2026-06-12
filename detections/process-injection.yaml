@@ -1,0 +1,31 @@
+detect:
+  - name: "Process Injection via CreateRemoteThread"
+    event: "SUSPICIOUS_THREAD_CREATION"
+    op: "and"
+    rules:
+      - op: "is windows"
+      - field: "SOURCE.PROCESS_NAME"
+        op: "matches"
+        value: "(?i).*(powershell|cmd|wscript|cscript|mshta|rundll32|regsvr32).*"
+      - field: "TARGET.PROCESS_NAME"
+        op: "is one of"
+        value:
+          - "explorer.exe"
+          - "svchost.exe"
+          - "winlogon.exe"
+          - "lsass.exe"
+          - "services.exe"
+    action: "alert"
+
+  - name: "Reflective DLL Injection"
+    event: "NEW_MODULE"
+    op: "and"
+    rules:
+      - op: "is windows"
+      - field: "MODULE.SOURCE"
+        op: "is"
+        value: "unknown"
+      - field: "PROCESS.PROCESS_NAME"
+        op: "matches"
+        value: "(?i).*(svchost|explorer|winlogon|lsass).*"
+    action: "alert"

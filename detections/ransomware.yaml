@@ -1,0 +1,35 @@
+detect:
+  - name: "Mass File Extension Changes"
+    event: "FILE_CHANGE"
+    op: "and"
+    rules:
+      - op: "is windows"
+      - field: "FILE.EXTENSION"
+        op: "matches"
+        value: "(?i).*(locker|encrypted|enc|crypt|ransom|crypted|locked).*"
+    op: "and"
+    rules:
+      - field: "FILE.COUNT"
+        op: ">="
+        value: 50
+    action: "alert"
+
+  - name: "Volume Shadow Copy Deletion"
+    event: "NEW_PROCESS"
+    op: "and"
+    rules:
+      - op: "is windows"
+      - field: "COMMAND_LINE"
+        op: "matches"
+        value: "(?i).*vssadmin.*delete.*shadows.*"
+    action: "alert"
+
+  - name: "Ransomware Notes Written"
+    event: "NEW_FILE"
+    op: "and"
+    rules:
+      - op: "is windows"
+      - field: "FILE.PATH"
+        op: "matches"
+        value: "(?i).*(READ_ME|HOW_TO_DECRYPT|RECOVER|DECRYPT|HELP_INSTRUCTIONS|LOCKED|#DECRYPT).*"
+    action: "alert"

@@ -1,0 +1,15 @@
+{
+  "daemon_mode": true,
+  "daemon_listen": "0.0.0.0:31337",
+  "lhost": "192.168.56.101",
+  "lport": 443,
+  "profile": "EDR-Lab-Profile",
+  "canary_domains": [],
+  "disable_c2_profile": false,
+  "operators": [
+    {
+      "name": "lab-operator",
+      "password": "changeme-later"
+    }
+  ]
+}

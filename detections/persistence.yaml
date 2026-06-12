@@ -1,0 +1,33 @@
+detect:
+  - name: "Registry Run Key Persistence"
+    event: "REG_SET_VALUE"
+    op: "and"
+    rules:
+      - op: "is windows"
+      - field: "REG_KEY.PATH"
+        op: "matches"
+        value: "(?i).*(Software\\Microsoft\\Windows\\CurrentVersion\\Run|Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce).*"
+      - field: "REG_KEY.VALUE"
+        op: "matches"
+        value: "(?i).*(powershell|cmd|wscript|cscript|mshta|rundll32|regsvr32|bitsadmin).*"
+    action: "alert"
+
+  - name: "Startup Folder Persistence"
+    event: "NEW_FILE"
+    op: "and"
+    rules:
+      - op: "is windows"
+      - field: "FILE.PATH"
+        op: "matches"
+        value: "(?i).*\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\.*"
+    action: "alert"
+
+  - name: "New Service Created"
+    event: "NEW_SERVICE"
+    op: "and"
+    rules:
+      - op: "is windows"
+      - field: "SERVICE.IMAGE_PATH"
+        op: "matches"
+        value: "(?i).*(temp|tmp|appdata|users).*"
+    action: "alert"

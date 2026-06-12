@@ -1,0 +1,36 @@
+detect:
+  - name: "LSASS Dump via Procdump"
+    event: "PROCESS_OPEN"
+    op: "and"
+    rules:
+      - op: "is windows"
+      - field: "TARGET.EVENT_TARGET_FILE"
+        op: "matches"
+        value: ".*lsass\.exe$"
+      - field: "SOURCE.PROCESS_NAME"
+        op: "matches"
+        value: "(?i).*(procdump|procdump64|sqldumper|dump|comsvcs).*"
+    action: "alert"
+
+  - name: "LSASS Dump via Comsvcs.dll"
+    event: "NEW_PROCESS"
+    op: "and"
+    rules:
+      - op: "is windows"
+      - field: "COMMAND_LINE"
+        op: "matches"
+        value: "(?i).*comsvcs\.dll.*MiniDump.*"
+    action: "alert"
+
+  - name: "LSASS Access via Non-Standard Process"
+    event: "PROCESS_OPEN"
+    op: "and"
+    rules:
+      - op: "is windows"
+      - field: "TARGET.EVENT_TARGET_FILE"
+        op: "matches"
+        value: ".*lsass\.exe$"
+      - field: "SOURCE.IS_SIGNED"
+        op: "is"
+        value: false
+    action: "isolate"

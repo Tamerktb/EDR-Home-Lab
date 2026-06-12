@@ -1,0 +1,29 @@
+# LimaCharlie Response Rules
+# These auto-respond to detected threats
+
+respond:
+  - name: "Isolate on LSASS Access"
+    detect: "LSASS Access Detected"
+    action: "isolate"
+    target: "sensor"
+
+  - name: "Kill Mimikatz on Detection"
+    detect: "Mimikatz Detection"
+    action: "task_kill"
+    target: "process"
+
+  - name: "Kill Malicious PowerShell"
+    detect: "Suspicious PowerShell Execution"
+    action: "task_kill"
+    target: "process"
+
+  - name: "Remove Malicious Scheduled Task"
+    detect: "Scheduled Task Created"
+    action: "task_run"
+    command: "schtasks /delete /tn {{TASK.NAME}} /f"
+    target: "sensor"
+
+  - name: "Alert on Ransomware Notes"
+    detect: "Ransomware Notes Detected"
+    action: "alert"
+    target: "sensor"

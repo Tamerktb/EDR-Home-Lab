@@ -1,0 +1,94 @@
+# LimaCharlie Detection & Response (D&R) Rules
+# Deploy these via LimaCharlie web console: Artifacts -> D&R Rules
+
+detect:
+  - name: "LSASS Access Detected"
+    event: "PROCESS_OPEN"
+    op: "and"
+    rules:
+      - op: "is windows"
+      - field: "TARGET.EVENT_TARGET_FILE"
+        op: "matches"
+        value: ".*lsass\.exe$"
+      - field: "SOURCE.PROCESS_NAME"
+        op: "is not"
+        value: "C:\\Windows\\System32\\lsass.exe"
+    action: "alert"
+
+  - name: "Mimikatz Detection"
+    event: "NEW_PROCESS"
+    op: "or"
+    rules:
+      - field: "FILE.PATH"
+        op: "matches"
+        value: "(?i).*(mimikatz|mimikatz\.exe|mimidrv\.sys).*"
+      - field: "FILE.ORIGINAL_NAME"
+        op: "matches"
+        value: "(?i).*mimikatz.*"
+    action: "alert"
+
+  - name: "Suspicious PowerShell Execution"
+    event: "NEW_PROCESS"
+    op: "and"
+    rules:
+      - op: "is windows"
+      - field: "FILE.ORIGINAL_NAME"
+        op: "is"
+        value: "powershell.exe"
+      - field: "COMMAND_LINE"
+        op: "matches"
+        value: "(?i).*(-enc|-e\s+|Base64|Hidden|WindowStyle\s+Hidden|DownloadString|Invoke-Expression|IEX|Start-BitsTransfer).*"
+    action: "alert"
+
+  - name: "Scheduled Task Created"
+    event: "NEW_SCHEDULED_TASK"
+    op: "and"
+    rules:
+      - op: "is windows"
+      - field: "TASK.NAME"
+        op: "matches"
+        value: "(?i).*(updater|systemcheck|windowsupdate|backdoor|persist).*"
+    action: "alert"
+
+  - name: "Service Installed"
+    event: "NEW_SERVICE"
+    op: "and"
+    rules:
+      - op: "is windows"
+      - field: "SERVICE.IMAGE_PATH"
+        op: "matches"
+        value: "(?i).*(temp|tmp|appdata|users\\.*).*"
+    action: "alert"
+
+  - name: "Ransomware Notes Detected"
+    event: "NEW_FILE"
+    op: "and"
+    rules:
+      - op: "is windows"
+      - field: "FILE.PATH"
+        op: "matches"
+        value: "(?i).*(READ_ME|HOW_TO_DECRYPT|RECOVER|DECRYPT|LOCKED|.locker).*"
+    action: "alert"
+
+  - name: "Network Connection to C2"
+    event: "NEW_CONNECTION"
+    op: "and"
+    rules:
+      - op: "is windows"
+      - field: "CONNECTION.IP_PORT"
+        op: "matches"
+        value: "(?i).*(443|8443|1337|4443|8080).*"
+      - field: "PROCESS.PROCESS_NAME"
+        op: "matches"
+        value: "(?i).*(powershell|cmd|wscript|cscript|rundll32|mshta|regsvr32).*"
+    action: "alert"
+
+  - name: "WMI Persistence"
+    event: "WMI_PERSISTENCE"
+    op: "and"
+    rules:
+      - op: "is windows"
+      - field: "WMI.FILTER_NAME"
+        op: "matches"
+        value: "(?i).*(updater|health|maintenance|cache).*"
+    action: "alert"

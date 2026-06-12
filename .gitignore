@@ -1,0 +1,41 @@
+# Vagrant
+.vagrant/
+*.box
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Credentials
+*.key
+*.pem
+*.env
+**/secrets/*
+
+# Virtual Environments
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Binary artifacts
+*.exe
+*.dll
+*.bin
+sliver-server
+sliver-client
+
+# Temp
+tmp/
+temp/
