@@ -6,20 +6,13 @@ A home lab for simulating cyber attacks and defenses in a controlled environment
 
 ## Architecture
 
-```
-┌─────────────────┐          ┌──────────────────────┐
-│  Kali Linux VM  │  C2      │   Windows 10/11 VM   │
-│  (Attacker)     │◄────────►│  (Victim)             │
-│  - Sliver Server│  HTTPS   │  - Sliver Implant     │
-│  - C2 Profiles  │  443     │  - LimaCharlie Sensor │
-│  - Attack Tools │          │  - Sysmon             │
-└─────────────────┘          └──────────┬───────────┘
-                                         │
-                                    ┌────▼────┐
-                                    │LimaCharlie│
-                                    │Cloud EDR │
-                                    └─────────┘
-```
+![EDR Home Lab architecture](architecture.png)
+
+The lab runs two VMs on an isolated host-only network: a Kali attacker driving
+Sliver C2, and a Windows victim instrumented with Sysmon, the Sliver implant and
+the LimaCharlie sensor. Detection and response rules execute in LimaCharlie's
+cloud, so every staged technique in `attacks/` has a corresponding rule in
+`detections/` waiting to catch it.
 
 ## Project Structure
 
