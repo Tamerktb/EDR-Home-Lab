@@ -149,7 +149,9 @@ sliver > shell
 
 ## License
 
-For educational purposes only. Do not use on systems without authorization.
+MIT - see [LICENSE](LICENSE).
+
+All attack simulations and C2 infrastructure are intended for **isolated, authorized lab environments only**.
 
 ## Resources
 
